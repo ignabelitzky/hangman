@@ -22,3 +22,18 @@ std::string get_random_word() {
     }
     return words.at(gen_random_int(0, words.size()-1));
 }
+
+char grayScaleToASCII(float scale) {
+    std::string asciiChars = " :-=+*#%@";
+    int index = scale * (asciiChars.size() - 1) / 255;
+    return asciiChars[index];
+}
+
+void add_title_to_window(WINDOW *win, const std::string& title) {
+    int start_pos = (getmaxx(win) - title.length()) / 2;
+    if(start_pos < 1) {
+        start_pos = 1;
+    }
+    box(win, 0, 0);
+    mvwprintw(win, 0, start_pos, "%s", title.c_str());
+}

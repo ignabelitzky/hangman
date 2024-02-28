@@ -1,19 +1,20 @@
 CXX := g++
-CXXFLAGS := -Wall -Werror -Wextra -pedantic -std=c++23 -march=native -O2
+CXXFLAGS := -Wall -Werror -Wextra -pedantic -std=c++17 -march=native -O2
 NCURSES_LIBS := -lncurses
+OPENCV_LIBS := `pkg-config --cflags --libs opencv`
 
 TARGET := hangman
 
-SRC := src/main.cpp src/menu.cpp src/helper.cpp
+SRC := src/main.cpp src/menu.cpp src/helper.cpp src/game.cpp
 OBJ := $(SRC:.cpp=.o)
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CXX) -o $@ $^ $(NCURSES_LIBS)
+	$(CXX) -o $@ $^ $(NCURSES_LIBS) $(OPENCV_LIBS)
 
 %.o: %.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
+	$(CXX) -c -o $@ $< $(CXXFLAGS) $(OPENCV_LIBS)
 
 clean:
 	rm -f $(TARGET) $(OBJ)
