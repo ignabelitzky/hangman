@@ -30,7 +30,7 @@ void Game::update_hangman_window() {
     cv::Mat image;
     int height = getmaxy(hangmanWindow)-2;
     int width = getmaxx(hangmanWindow);
-    switch(state) {
+    switch(hangmanState) {
         case ZERO:
             image = cv::imread("resources/Hangman-0.png", cv::IMREAD_GRAYSCALE);
             break;
@@ -92,14 +92,17 @@ int Game::update_prompt_window() {
     int input;
     int maxy, maxx;
     getmaxyx(promptWindow, maxy, maxx);
-    mvwaddstr(promptWindow, maxy/2, 1, "\tPlease enter a letter or a word >> ");
+    mvwaddstr(promptWindow, maxy/2, 1, "\tPlease enter a letter >> ");
     wrefresh(promptWindow);
     input = wgetch(promptWindow);
+    if(input >= 'a' && input <= 'z') {
+        input -= 32;
+    }
     return input;
 }
 
 Game::Game() {
-    state = ZERO;
+    hangmanState = ZERO;
     for(char i = 'A'; i <= 'Z'; ++i) {
         availableLetters.push_back(i);
     }
@@ -119,8 +122,8 @@ void Game::update_round(int letter) {
         }
     }
     if(positionsFound.empty()) {
-        if(state != SIX) {
-            state = static_cast<Stage>(static_cast<int>(state) + 1);
+        if(hangmanState != SIX) {
+            hangmanState = static_cast<Stage>(static_cast<int>(hangmanState) + 1);
         }
     } else {
         for(size_t i = 0; i < positionsFound.size(); ++i) {
@@ -146,7 +149,7 @@ void Game::run() {
         update_available_letters_window();
         ch = update_prompt_window();
         update_round(ch);
-        if(state == SIX) {
+        if(hangmanState == SIX) {
             finish = true;
         } else if(randomWord.compare(hiddenWord) == 0) {
             finish = true;

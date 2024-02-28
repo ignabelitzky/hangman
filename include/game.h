@@ -18,7 +18,7 @@ enum Stage {
 
 class Game {
     private:
-        Stage state;
+        Stage hangmanState;
         WINDOW *hangmanWindow;
         WINDOW *hiddenWordWindow;
         WINDOW *availableLettersWindow;

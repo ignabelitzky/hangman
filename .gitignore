@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+hangman
 
 # VS Code
 .vscode/
