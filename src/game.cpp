@@ -18,11 +18,6 @@ void Game::initialize_windows() {
     add_title_to_window(availableLettersWindow, "Available Letters");
     add_title_to_window(promptWindow, "Prompt Window");
 
-    /*box(hangmanWindow, 0, 0);
-    box(hiddenWordWindow, 0, 0);
-    box(availableLettersWindow, 0, 0);
-    box(promptWindow, 0, 0);*/
-
     refresh();
     wrefresh(hangmanWindow);
     wrefresh(hiddenWordWindow);
@@ -30,11 +25,84 @@ void Game::initialize_windows() {
     wrefresh(promptWindow);
 }
 
+void Game::update_hangman_window() {
+    //wclear(hangmanWindow);
+    wmove(hangmanWindow, 0, 0);
+    cv::Mat image;
+    int height = getmaxy(hangmanWindow)-2;
+    int width = getmaxx(hangmanWindow);
+    switch(state) {
+        case ZERO:
+            image = cv::imread("resources/Hangman-0.png", cv::IMREAD_GRAYSCALE);
+            break;
+        case ONE:
+            image = cv::imread("resources/Hangman-1.png", cv::IMREAD_GRAYSCALE);
+            break;
+        case TWO:
+            image = cv::imread("resources/Hangman-2.png", cv::IMREAD_GRAYSCALE);
+            break;
+        case THREE:
+            image = cv::imread("resources/Hangman-3.png", cv::IMREAD_GRAYSCALE);
+            break;
+        case FOUR:
+            image = cv::imread("resources/Hangman-4.png", cv::IMREAD_GRAYSCALE);
+            break;
+        case FIVE:
+            image = cv::imread("resources/Hangman-5.png", cv::IMREAD_GRAYSCALE);
+            break;
+        case SIX:
+            image = cv::imread("resources/Hangman-6.png", cv::IMREAD_GRAYSCALE);
+            break;
+        default:
+            break;
+    }
+    cv::resize(image, image, cv::Size(height*2, height), 0, 0, cv::INTER_LINEAR);
+    for(int y = 0; y < image.rows; ++y) {
+        for(int x = 0; x < image.cols; ++x) {
+            float pixelValue = image.at<uchar>(y, x);
+            char asciiChar = grayScaleToASCII(pixelValue);
+            mvwaddch(hangmanWindow, y+1, width/2 + x - height, asciiChar);
+        }
+    }
+    wrefresh(hangmanWindow);
+}
+
+void Game::update_hidden_word_window() {
+    int maxy, maxx;
+    getmaxyx(hiddenWordWindow, maxy, maxx);
+    int wordLength = hiddenWord.size();
+    for(int i = 0; i < wordLength; ++i) {
+        mvwaddch(hiddenWordWindow, maxy/2, maxx/2 - wordLength + i*2, '_');
+    }
+    wrefresh(hiddenWordWindow);
+}
+
+void Game::update_available_letters_window() {
+    int maxy, maxx;
+    getmaxyx(availableLettersWindow, maxy, maxx);
+    for(size_t i = 0; i < availableLetters.size(); ++i) {
+        mvwaddch(availableLettersWindow, maxy/2, maxx/2 - availableLetters.size() + i*2, availableLetters.at(i));
+    }
+    wrefresh(availableLettersWindow);
+}
+
+int Game::update_prompt_window() {
+    int input;
+    int maxy, maxx;
+    getmaxyx(promptWindow, maxy, maxx);
+    mvwaddstr(promptWindow, maxy/2, 1, "\tPlease enter a letter or a word >> ");
+    wrefresh(promptWindow);
+    input = wgetch(promptWindow);
+    return input;
+}
+
 Game::Game() {
+    state = ZERO;
     for(char i = 'A'; i <= 'Z'; ++i) {
         availableLetters.push_back(i);
     }
     hiddenWord = get_random_word();
+    finish = false;
 }
 
 Game::~Game() {
@@ -43,9 +111,19 @@ Game::~Game() {
 
 void Game::run() {
     initscr();
-    wclear(stdscr);
 
     initialize_windows();
+
+    int guess;
+
+    do {
+        update_hangman_window();
+        update_hidden_word_window();
+        update_available_letters_window();
+        guess = update_prompt_window();
+        std::cout << guess << std::endl;
+        finish = true;
+    } while(finish != true);
 
     getch();
 

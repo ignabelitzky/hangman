@@ -25,7 +25,12 @@ class Game {
         WINDOW *promptWindow;
         std::vector<char> availableLetters;
         std::string hiddenWord;
+        bool finish;
         void initialize_windows();
+        void update_hangman_window();
+        void update_hidden_word_window();
+        void update_available_letters_window();
+        int update_prompt_window();
     public:
         Game();
         ~Game();
