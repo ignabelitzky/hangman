@@ -7,6 +7,8 @@ Menu::Menu(WINDOW *window) {
     entries.push_back(std::pair(0, "New Game"));
     entries.push_back(std::pair(1, "Exit"));
     menuItem = 0;
+    Options.push_back(NEW_GAME);
+    Options.push_back(EXIT);
 }
 
 Menu::~Menu() {
@@ -30,7 +32,7 @@ void Menu::drawMenu() {
         wrefresh(window);
 }
 
-int Menu::display() {
+Option Menu::display() {
     wclear(window);
     keypad(window, TRUE);
     noecho();
@@ -68,5 +70,5 @@ int Menu::display() {
     
     echo();
     curs_set(1);
-    return menuItem;
+    return Options.at(menuItem);
 }

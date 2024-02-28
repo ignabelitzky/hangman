@@ -4,7 +4,7 @@ NCURSES_LIBS := -lncurses
 
 TARGET := hangman
 
-SRC := src/main.cpp src/menu.cpp
+SRC := src/main.cpp src/menu.cpp src/helper.cpp
 OBJ := $(SRC:.cpp=.o)
 
 all: $(TARGET)
