@@ -26,7 +26,6 @@ void Game::initialize_windows() {
 }
 
 void Game::update_hangman_window() {
-    //wclear(hangmanWindow);
     wmove(hangmanWindow, 0, 0);
     cv::Mat image;
     int height = getmaxy(hangmanWindow)-2;
@@ -70,14 +69,17 @@ void Game::update_hangman_window() {
 void Game::update_hidden_word_window() {
     int maxy, maxx;
     getmaxyx(hiddenWordWindow, maxy, maxx);
-    int wordLength = hiddenWord.size();
+    int wordLength = randomWord.size();
     for(int i = 0; i < wordLength; ++i) {
-        mvwaddch(hiddenWordWindow, maxy/2, maxx/2 - wordLength + i*2, '_');
+        mvwaddch(hiddenWordWindow, maxy/2, maxx/2 - wordLength + i*2, hiddenWord.at(i));
     }
     wrefresh(hiddenWordWindow);
 }
 
 void Game::update_available_letters_window() {
+    wclear(availableLettersWindow);
+    box(availableLettersWindow, 0, 0);
+    add_title_to_window(availableLettersWindow, "Available Letters");
     int maxy, maxx;
     getmaxyx(availableLettersWindow, maxy, maxx);
     for(size_t i = 0; i < availableLetters.size(); ++i) {
@@ -101,8 +103,33 @@ Game::Game() {
     for(char i = 'A'; i <= 'Z'; ++i) {
         availableLetters.push_back(i);
     }
-    hiddenWord = get_random_word();
+    randomWord = get_random_word();
+    for(char& c : randomWord) {
+        c = std::toupper(static_cast<unsigned char>(c));
+    }
+    hiddenWord = std::string(randomWord.length(), '_');
     finish = false;
+    isWinner = false;
+}
+
+void Game::update_round(int letter) {
+    std::vector<int> positionsFound;
+    char ch = char(letter);
+    availableLetters.erase(std::remove(availableLetters.begin(), availableLetters.end(), ch), availableLetters.end());
+    for(size_t i = 0; i < randomWord.size(); ++i) {
+        if(randomWord.at(i) == ch) {
+            positionsFound.push_back(i);
+        }
+    }
+    if(positionsFound.empty()) {
+        if(state != SIX) {
+            state = static_cast<Stage>(static_cast<int>(state) + 1);
+        }
+    } else {
+        for(size_t i = 0; i < positionsFound.size(); ++i) {
+            hiddenWord.at(positionsFound.at(i)) = ch;
+        }
+    }
 }
 
 Game::~Game() {
@@ -114,22 +141,45 @@ void Game::run() {
 
     initialize_windows();
 
-    int guess;
+    int ch = 0;
 
     do {
         update_hangman_window();
         update_hidden_word_window();
         update_available_letters_window();
-        guess = update_prompt_window();
-        std::cout << guess << std::endl;
-        finish = true;
+        ch = update_prompt_window();
+        update_round(ch);
+        if(state == SIX) {
+            finish = true;
+        } else if(randomWord.compare(hiddenWord) == 0) {
+            finish = true;
+            isWinner = true;
+        }
     } while(finish != true);
 
-    getch();
+    wclear(hangmanWindow);
+    wclear(hiddenWordWindow);
+    wclear(availableLettersWindow);
+    wclear(promptWindow);
+    
+    wrefresh(hangmanWindow);
+    wrefresh(hiddenWordWindow);
+    wrefresh(availableLettersWindow);
+    wrefresh(promptWindow);
 
     delwin(hangmanWindow);
     delwin(hiddenWordWindow);
     delwin(availableLettersWindow);
     delwin(promptWindow);
+
+    wclear(stdscr);
+    move(0, 0);
+    if(isWinner) 
+        waddstr(stdscr, "You win!!!\n");
+    else
+        waddstr(stdscr, "You lose!!!\n");
+    wrefresh(stdscr);
+    
+    getch();
     endwin();
 }
