@@ -104,9 +104,6 @@ Game::Game() {
         availableLetters.push_back(i);
     }
     randomWord = get_random_word();
-    for(char& c : randomWord) {
-        c = std::toupper(static_cast<unsigned char>(c));
-    }
     hiddenWord = std::string(randomWord.length(), '_');
     finish = false;
     isWinner = false;
