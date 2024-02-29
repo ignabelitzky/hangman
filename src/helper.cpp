@@ -37,3 +37,11 @@ void add_title_to_window(WINDOW *win, const std::string& title) {
     box(win, 0, 0);
     mvwprintw(win, 0, start_pos, "%s", title.c_str());
 }
+
+void set_hangman_images(std::map<Stage, cv::Mat> &m) {
+    for(int i = 0; i < 7; ++i) {
+        std::string fileName = "resources/Hangman-" + std::to_string(i) + ".png";
+        cv::Mat image = cv::imread(fileName, cv::IMREAD_GRAYSCALE);
+        m.insert({static_cast<Stage>(i), image});
+    }
+}

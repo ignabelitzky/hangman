@@ -3,22 +3,14 @@
 
 #include <ncurses.h>
 #include <vector>
+#include <map>
 #include <string>
 #include "helper.h"
-
-enum Stage {
-    ZERO,
-    ONE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX
-};
 
 class Game {
     private:
         Stage hangmanState;
+        std::map<Stage, cv::Mat> hangmanImages;
         WINDOW *hangmanWindow;
         WINDOW *hiddenWordWindow;
         WINDOW *availableLettersWindow;

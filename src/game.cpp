@@ -27,35 +27,12 @@ void Game::initialize_windows() {
 
 void Game::update_hangman_window() {
     wmove(hangmanWindow, 0, 0);
-    cv::Mat image;
     int height = getmaxy(hangmanWindow)-2;
     int width = getmaxx(hangmanWindow);
-    switch(hangmanState) {
-        case ZERO:
-            image = cv::imread("resources/Hangman-0.png", cv::IMREAD_GRAYSCALE);
-            break;
-        case ONE:
-            image = cv::imread("resources/Hangman-1.png", cv::IMREAD_GRAYSCALE);
-            break;
-        case TWO:
-            image = cv::imread("resources/Hangman-2.png", cv::IMREAD_GRAYSCALE);
-            break;
-        case THREE:
-            image = cv::imread("resources/Hangman-3.png", cv::IMREAD_GRAYSCALE);
-            break;
-        case FOUR:
-            image = cv::imread("resources/Hangman-4.png", cv::IMREAD_GRAYSCALE);
-            break;
-        case FIVE:
-            image = cv::imread("resources/Hangman-5.png", cv::IMREAD_GRAYSCALE);
-            break;
-        case SIX:
-            image = cv::imread("resources/Hangman-6.png", cv::IMREAD_GRAYSCALE);
-            break;
-        default:
-            break;
-    }
+
+    cv::Mat image = hangmanImages[hangmanState];
     cv::resize(image, image, cv::Size(height*2, height), 0, 0, cv::INTER_LINEAR);
+    
     for(int y = 0; y < image.rows; ++y) {
         for(int x = 0; x < image.cols; ++x) {
             float pixelValue = image.at<uchar>(y, x);
@@ -103,6 +80,7 @@ int Game::update_prompt_window() {
 
 Game::Game() {
     hangmanState = ZERO;
+    set_hangman_images(hangmanImages);
     for(char i = 'A'; i <= 'Z'; ++i) {
         availableLetters.push_back(i);
     }
