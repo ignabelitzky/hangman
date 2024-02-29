@@ -78,6 +78,20 @@ int Game::update_prompt_window() {
     return input;
 }
 
+void Game::game_over() {
+    initscr();
+    if(isWinner) {
+        waddstr(stdscr, "You won!!!\n");
+    } else {
+        waddstr(stdscr, "You lose!!!\n");
+    }
+    waddstr(stdscr, std::string("The word was " + randomWord).c_str());
+    waddstr(stdscr, "\n\nPress any key to go to the main menu.");
+    wrefresh(stdscr);
+    getch();
+    endwin();
+}
+
 Game::Game() {
     hangmanState = ZERO;
     set_hangman_images(hangmanImages);
@@ -151,13 +165,6 @@ void Game::run() {
     delwin(promptWindow);
 
     wclear(stdscr);
-    move(0, 0);
-    if(isWinner) 
-        waddstr(stdscr, "You win!!!\n");
-    else
-        waddstr(stdscr, "You lose!!!\n");
     wrefresh(stdscr);
-    
-    getch();
     endwin();
 }

@@ -10,11 +10,13 @@ int main() {
     if(selection == NEW_GAME) {
         // run game
         endwin();
-        Game game;
-        game.run();
-    } else if(selection == EXIT) {
-        // close application
-        endwin();
+        do {
+            Game game;
+            game.run();
+            game.game_over();
+            selection = mainMenu.display();
+        } while(selection != EXIT);
     }
+    endwin();
     return 0;
 }

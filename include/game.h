@@ -30,6 +30,7 @@ class Game {
         Game();
         ~Game();
         void run();
+        void game_over();
 };
 
 #endif
