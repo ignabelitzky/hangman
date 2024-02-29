@@ -21,6 +21,8 @@ enum Stage {
     SIX
 };
 
+void populate_words();
+
 int gen_random_int(int min, int max);
 
 std::string get_random_word();

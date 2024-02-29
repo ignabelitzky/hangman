@@ -4,6 +4,20 @@ namespace {
     std::vector<std::string> words;
 }
 
+void populate_words() {
+    std::string inputFile = "data/clean_oxford_3000_word_list.txt";
+    std::ifstream ifstrm{inputFile};
+    std::string word;
+    if(ifstrm) {
+        while(std::getline(ifstrm, word)) {
+            words.push_back(word);
+        }
+        ifstrm.close();
+    } else {
+        std::cerr << "Error opening the words file!" << std::endl;
+    }
+}
+
 int gen_random_int(int min, int max) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -13,17 +27,7 @@ int gen_random_int(int min, int max) {
 
 std::string get_random_word() {
     if(words.empty()) {
-        std::string inputFile = "data/clean_oxford_3000_word_list.txt";
-        std::ifstream ifstrm{inputFile};
-        std::string word;
-        if(!ifstrm) {
-            std::cerr << "Error opening the file!" << std::endl;
-        } else {
-            while(std::getline(ifstrm, word)) {
-                words.push_back(word); 
-            }
-            ifstrm.close();
-        }
+        populate_words();
     }
     return words.at(gen_random_int(0, words.size()-1));
 }
