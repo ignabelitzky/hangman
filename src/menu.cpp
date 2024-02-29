@@ -4,11 +4,11 @@ Menu::Menu(WINDOW *window) {
     title = "THE HANGMAN";
     this->window = window;
     getmaxyx(window, windowHeight, windowWidth);
-    entries.push_back(std::pair(0, "New Game"));
-    entries.push_back(std::pair(1, "Exit"));
+    entries.push_back(MenuItem{0, "New Game"});
+    entries.push_back(MenuItem{1, "Exit"});
     menuItem = 0;
-    Options.push_back(NEW_GAME);
-    Options.push_back(EXIT);
+    options.push_back(NEW_GAME);
+    options.push_back(EXIT);
 }
 
 Menu::~Menu() {
@@ -20,16 +20,16 @@ void Menu::drawMenu() {
     int y = (windowHeight / 2) - (entries.size() * 2);
     int x = windowWidth / 2;
     for(size_t i = 0; i < entries.size(); ++i) {
-            offset = entries.at(i).second.length() / 2;
-            y += 2;
-            if(i == static_cast<size_t>(menuItem))
-                attron(A_REVERSE);
-            wmove(window, y, x - offset);
-            waddstr(window, entries.at(i).second.c_str());
-            attroff(A_REVERSE);
+        offset = entries.at(i).name.length() / 2;
+        y += 2;
+        if(i == static_cast<size_t>(menuItem)) {
+            wattron(window, A_REVERSE);
         }
-        y = (windowHeight / 2) - (entries.size() * 2);
-        wrefresh(window);
+        wmove(window, y, x - offset);
+        waddstr(window, entries.at(i).name.c_str());
+        wattroff(window, A_REVERSE);
+    }
+    y = (windowHeight / 2) - (entries.size() * 2);
 }
 
 Option Menu::display() {
@@ -66,9 +66,10 @@ Option Menu::display() {
                 break;
         }
         drawMenu();
+        wrefresh(window);
     } while(key != '\n');
     
     echo();
     curs_set(1);
-    return Options.at(menuItem);
+    return options.at(menuItem);
 }

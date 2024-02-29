@@ -11,15 +11,20 @@ enum Option {
     EXIT
 };
 
+struct MenuItem {
+    int id;
+    std::string name;
+};
+
 class Menu {
     private:
         std::string title;
-        std::vector<std::pair<int, std::string>> entries;
+        std::vector<MenuItem> entries;
         WINDOW *window;
         int windowHeight;
         int windowWidth;
         int menuItem;
-        std::vector<Option> Options;
+        std::vector<Option> options;
         void drawMenu();
     public:
         Menu(WINDOW *window);
