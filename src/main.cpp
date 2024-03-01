@@ -16,8 +16,9 @@ int main() {
             game.game_over();
             selection = mainMenu.display();
         } while(selection != EXIT);
-    } else if(selection == EXIT) {
-        endwin();
     }
+    wclear(stdscr);
+    wrefresh(stdscr);
+    endwin();
     return 0;
 }
