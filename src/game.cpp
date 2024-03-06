@@ -87,17 +87,17 @@ std::string Game::update_prompt_window() {
 }
 
 void Game::game_over() {
-    initscr();
-    if(isWinner) {
-        waddstr(stdscr, "You won!!!\n");
-    } else {
-        waddstr(stdscr, "You lose!!!\n");
+    std::vector<std::string> options = {"Go to the main menu"};
+    std::string message = std::format("You {}!!!\n\nThe word was {}", isWinner ? "won" : "lose", randomWord);
+    try {
+        MessageBox *mboxGameOver = new MessageBox(" [Game Over] ", message, options);
+        mboxGameOver->show();
+        delete mboxGameOver;
+    } catch(const std::runtime_error &e) {
+        endwin();
+        std::cerr << e.what() << '\n';
+        exit(1);
     }
-    waddstr(stdscr, std::string("The word was " + randomWord).c_str());
-    waddstr(stdscr, "\n\nPress any key to go to the main menu.");
-    wrefresh(stdscr);
-    getch();
-    endwin();
 }
 
 Game::Game() {
