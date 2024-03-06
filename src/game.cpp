@@ -65,17 +65,25 @@ void Game::update_available_letters_window() {
     wrefresh(availableLettersWindow);
 }
 
-int Game::update_prompt_window() {
+std::string Game::update_prompt_window() {
     int input;
     int maxy, maxx;
     getmaxyx(promptWindow, maxy, maxx);
     mvwaddstr(promptWindow, maxy/2, 1, "\tPlease enter a letter >> ");
     wrefresh(promptWindow);
-    input = wgetch(promptWindow);
-    if(input >= 'a' && input <= 'z') {
-        input -= 32;
+    std::string result;
+    while((input = wgetch(promptWindow)) != '\n') {
+        if(input >= 'a' && input <= 'z') {
+            input -= 32;
+        }
+        result.push_back(static_cast<char>(input));
     }
-    return input;
+    wclear(promptWindow);
+    box(promptWindow, 0, 0);
+    add_title_to_window(promptWindow, "Prompt Window");
+    mvwaddstr(promptWindow, maxy/2, 1, "\tPlease enter a letter >> ");
+    wrefresh(promptWindow);
+    return result;
 }
 
 void Game::game_over() {
@@ -104,22 +112,30 @@ Game::Game() {
     isWinner = false;
 }
 
-void Game::update_round(int letter) {
+void Game::update_round(std::string input) {
     std::vector<int> positionsFound;
-    char ch = char(letter);
-    availableLetters.erase(std::remove(availableLetters.begin(), availableLetters.end(), ch), availableLetters.end());
-    for(size_t i = 0; i < randomWord.size(); ++i) {
-        if(randomWord.at(i) == ch) {
-            positionsFound.push_back(i);
+    if(input.size() == 1) {
+        char ch = input.at(0);
+        availableLetters.erase(std::remove(availableLetters.begin(), availableLetters.end(), ch), availableLetters.end());
+        for(size_t i = 0; i < randomWord.size(); ++i) {
+            if(randomWord.at(i) == ch) {
+                positionsFound.push_back(i);
+            }
         }
-    }
-    if(positionsFound.empty()) {
-        if(hangmanState != SIX) {
-            hangmanState = static_cast<Stage>(static_cast<int>(hangmanState) + 1);
+        if(positionsFound.empty()) {
+            if(hangmanState != SIX) {
+                hangmanState = static_cast<Stage>(static_cast<int>(hangmanState) + 1);
+            }
+        } else {
+            for(size_t i = 0; i < positionsFound.size(); ++i) {
+                hiddenWord.at(positionsFound.at(i)) = ch;
+            }
         }
     } else {
-        for(size_t i = 0; i < positionsFound.size(); ++i) {
-            hiddenWord.at(positionsFound.at(i)) = ch;
+        if(input.compare(randomWord) == 0) {
+            hiddenWord = randomWord;
+        } else {
+            hangmanState = static_cast<Stage>(static_cast<int>(hangmanState) + 1);
         }
     }
 }
@@ -133,14 +149,14 @@ void Game::run() {
 
     initialize_windows();
 
-    int ch = 0;
+    std::string input;
 
     do {
         update_hangman_window();
         update_hidden_word_window();
         update_available_letters_window();
-        ch = update_prompt_window();
-        update_round(ch);
+        input = update_prompt_window();
+        update_round(input);
         if(hangmanState == SIX) {
             finish = true;
         } else if(randomWord.compare(hiddenWord) == 0) {

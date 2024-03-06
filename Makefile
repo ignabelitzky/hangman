@@ -5,7 +5,7 @@ OPENCV_LIBS := `pkg-config --cflags --libs opencv`
 
 TARGET := hangman
 
-SRC := src/main.cpp src/menu.cpp src/helper.cpp src/game.cpp
+SRC := src/main.cpp src/menu.cpp src/helper.cpp src/game.cpp src/message_box.cpp
 OBJ := $(SRC:.cpp=.o)
 
 all: $(TARGET)

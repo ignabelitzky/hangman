@@ -24,8 +24,8 @@ class Game {
         void update_hangman_window();
         void update_hidden_word_window();
         void update_available_letters_window();
-        int update_prompt_window();
-        void update_round(int letter);
+        std::string update_prompt_window();
+        void update_round(std::string input);
     public:
         Game();
         ~Game();
