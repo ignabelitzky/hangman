@@ -1,5 +1,6 @@
 #include "../include/game.h"
 
+
 void Game::initialize_windows() {
     int maxy, maxx;
     getmaxyx(stdscr, maxy, maxx);
@@ -67,22 +68,24 @@ void Game::update_available_letters_window() {
 
 std::string Game::update_prompt_window() {
     int input;
-    int maxy, maxx;
-    getmaxyx(promptWindow, maxy, maxx);
-    mvwaddstr(promptWindow, maxy/2, 1, "\tPlease enter a letter >> ");
-    wrefresh(promptWindow);
+    update_text_from_prompt_window(promptWindow, "");
     std::string result;
     while((input = wgetch(promptWindow)) != '\n') {
+        if(input == 127) {
+            if(result.size() > 0) {
+                result.pop_back();
+                update_text_from_prompt_window(promptWindow, result);
+            }
+            continue;
+        }
         if(input >= 'a' && input <= 'z') {
             input -= 32;
         }
+        wprintw(promptWindow, "%c", input);
+        wrefresh(promptWindow);
         result.push_back(static_cast<char>(input));
     }
-    wclear(promptWindow);
-    box(promptWindow, 0, 0);
-    add_title_to_window(promptWindow, "Prompt Window");
-    mvwaddstr(promptWindow, maxy/2, 1, "\tPlease enter a letter >> ");
-    wrefresh(promptWindow);
+    update_text_from_prompt_window(promptWindow, result);
     return result;
 }
 
@@ -146,7 +149,7 @@ Game::~Game() {
 
 void Game::run() {
     initscr();
-
+    noecho();
     initialize_windows();
 
     std::string input;
@@ -183,4 +186,14 @@ void Game::run() {
     wclear(stdscr);
     wrefresh(stdscr);
     endwin();
+}
+
+void Game::update_text_from_prompt_window(WINDOW *promptWindow, std::string input) {
+    int maxy = getmaxy(promptWindow);
+    std::string message = std::format("\tPlease enter a letter or a word >> {}", input);
+    wclear(promptWindow);
+    box(promptWindow, 0, 0);
+    add_title_to_window(promptWindow, "Prompt Window");
+    mvwaddstr(promptWindow, maxy/2, 1, message.c_str());
+    wrefresh(promptWindow);
 }

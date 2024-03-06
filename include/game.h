@@ -28,6 +28,7 @@ class Game {
         void update_available_letters_window();
         std::string update_prompt_window();
         void update_round(std::string input);
+        static void update_text_from_prompt_window(WINDOW *promptWindow, std::string input);
     public:
         Game();
         ~Game();
