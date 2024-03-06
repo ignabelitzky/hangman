@@ -5,6 +5,8 @@
 
 ## Overview
 Hangman game for the Linux terminal.
+![Hangman-demo](https://github.com/ignabelitzky/hangman/assets/13757390/8075c0e8-c75b-409b-b32b-cff857e9cd34)
+
 
 ## Requirements
 
