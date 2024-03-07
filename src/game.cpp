@@ -191,6 +191,7 @@ Game::~Game()
 void Game::run()
 {
     playerName = get_player_name();
+    initscr();
     noecho();
     initialize_windows();
 

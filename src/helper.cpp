@@ -78,18 +78,22 @@ void display_scores()
     std::string output = "";
     if (ifstrm)
     {
-        std::string top_scores = "";
-        int i = 0;
-        while (std::getline(ifstrm, line) && i < 5)
+        std::string topScores = "";
+        int scoreCounter = 0;
+        while (std::getline(ifstrm, line) && scoreCounter < 5)
         {
-            top_scores += line + "\n";
-            ++i;
+            topScores += line + "\n";
+            ++scoreCounter;
+        }
+        if(scoreCounter == 0)
+        {
+            topScores = "No scores yet!";
         }
         ifstrm.close();
         try
         {
             std::vector<std::string> options = {"Go to menu", "Clear score"};
-            MessageBox *msgBoxScores = new MessageBox(" [Top 5 scores] ", top_scores, options);
+            MessageBox *msgBoxScores = new MessageBox(" [Top 5 scores] ", topScores, options);
             output = msgBoxScores->show();
             if (output == options.at(1))
             {
@@ -189,5 +193,6 @@ std::string get_player_name()
     mvwgetnstr(nameWin, 1, 2, name, 50);
     delwin(nameWin);
     wrefresh(stdscr);
+    endwin();
     return std::string(name);
 }

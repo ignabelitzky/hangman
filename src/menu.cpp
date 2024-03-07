@@ -47,12 +47,11 @@ Option Menu::display()
 
     int entriesSize = entries.size();
     int offset = title.length() / 2;
-    int y = (windowHeight / 2) - (entriesSize * 2);
     int x = windowWidth / 2;
     int key = 0;
 
-    wmove(window, y, x - offset);
-    waddstr(window, title.c_str());
+    box(window, 0, 0);
+    mvwaddstr(window, 0, x - offset, title.c_str());
 
     drawMenu();
 
