@@ -14,8 +14,8 @@ int main()
         selection = mainMenu.display();
         if (selection == NEW_GAME)
         {
-            // run game
             endwin();
+            // Loop until the user selects exit
             do
             {
                 Game game;
@@ -34,6 +34,9 @@ int main()
             catch (const std::exception &e)
             {
                 std::cerr << e.what() << std::endl;
+                wclear(stdscr);
+                wrefresh(stdscr);
+                endwin();
                 exit(1);
             }
         }

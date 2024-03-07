@@ -2,10 +2,12 @@
 
 void Game::initialize_windows()
 {
+    // Get screen dimensions
     int maxy, maxx;
     getmaxyx(stdscr, maxy, maxx);
     int yOffset = maxy / 2;
 
+    // Create windows for different parts of the game
     hangmanWindow = newwin(yOffset, maxx, 0, 0);
     yOffset = 5;
     hiddenWordWindow = newwin(yOffset, maxx, maxy / 2, 0);
@@ -26,15 +28,18 @@ void Game::initialize_windows()
     wrefresh(promptWindow);
 }
 
+// Update hangman windowwith the current hangman state
 void Game::update_hangman_window()
 {
     wmove(hangmanWindow, 0, 0);
     int height = getmaxy(hangmanWindow) - 2;
     int width = getmaxx(hangmanWindow);
 
+    // Resize hangman image to fit the window
     cv::Mat image = hangmanImages[hangmanState];
     cv::resize(image, image, cv::Size(height * 2, height), 0, 0, cv::INTER_LINEAR);
 
+    // Draw the hangman image to the window
     for (int y = 0; y < image.rows; ++y)
     {
         for (int x = 0; x < image.cols; ++x)
@@ -44,11 +49,14 @@ void Game::update_hangman_window()
             mvwaddch(hangmanWindow, y + 1, width / 2 + x - height, asciiChar);
         }
     }
+
+    // Print player name and score on hangman window
     mvwprintw(hangmanWindow, 1, 1, "Player: %s", playerName.c_str());
     mvwprintw(hangmanWindow, 2, 1, "Score: %d", playerScore);
     wrefresh(hangmanWindow);
 }
 
+// Update hidden word window with the current hidden word
 void Game::update_hidden_word_window()
 {
     int maxy, maxx;
@@ -61,6 +69,7 @@ void Game::update_hidden_word_window()
     wrefresh(hiddenWordWindow);
 }
 
+// Update available letters window with the current available letters
 void Game::update_available_letters_window()
 {
     wclear(availableLettersWindow);
@@ -75,14 +84,17 @@ void Game::update_available_letters_window()
     wrefresh(availableLettersWindow);
 }
 
+// Update prompt window to get user input
 std::string Game::update_prompt_window()
 {
     int input;
     update_text_from_prompt_window(promptWindow, "");
     std::string result;
+
+    // Continue to get input until the user presses enter
     while ((input = wgetch(promptWindow)) != '\n')
     {
-        if (input == 127)
+        if (input == 127)   // Handle backspace(delete) key
         {
             if (result.size() > 0)
             {
@@ -103,6 +115,7 @@ std::string Game::update_prompt_window()
     return result;
 }
 
+// Display game over message and save player score
 void Game::game_over()
 {
     std::vector<std::string> options = {"Go to the main menu"};
@@ -138,6 +151,7 @@ Game::Game()
     playerScore = 0;
 }
 
+// Update the game state based on the user input
 void Game::update_round(std::string input)
 {
     std::vector<int> positionsFound;
@@ -171,7 +185,7 @@ void Game::update_round(std::string input)
     }
     else
     {
-        if (input.compare(randomWord) == 0)
+        if (input.compare(randomWord) == 0) // If the user guessed the word
         {
             playerScore += 50;
             hiddenWord = randomWord;
@@ -188,6 +202,7 @@ Game::~Game()
 {
 }
 
+// Main function to run the game
 void Game::run()
 {
     playerName = get_player_name();
@@ -197,6 +212,7 @@ void Game::run()
 
     std::string input;
 
+    // Main loop game
     do
     {
         update_hangman_window();
@@ -204,6 +220,8 @@ void Game::run()
         update_available_letters_window();
         input = update_prompt_window();
         update_round(input);
+
+        // Check game ending conditions
         if (hangmanState == SIX)
         {
             finish = true;
@@ -213,18 +231,21 @@ void Game::run()
             finish = true;
             isWinner = true;
         }
-    } while (finish != true);
+    } while (finish != true);   // Continue game loop until the game is finished
 
+    // Clear all game windows
     wclear(hangmanWindow);
     wclear(hiddenWordWindow);
     wclear(availableLettersWindow);
     wclear(promptWindow);
 
+    // Refresh all game windows
     wrefresh(hangmanWindow);
     wrefresh(hiddenWordWindow);
     wrefresh(availableLettersWindow);
     wrefresh(promptWindow);
 
+    // Delete all game windows
     delwin(hangmanWindow);
     delwin(hiddenWordWindow);
     delwin(availableLettersWindow);
@@ -235,6 +256,7 @@ void Game::run()
     endwin();
 }
 
+// Update text on the prompt window
 void Game::update_text_from_prompt_window(WINDOW *promptWindow, std::string input)
 {
     int maxy = getmaxy(promptWindow);

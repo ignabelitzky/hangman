@@ -3,6 +3,7 @@
 
 namespace
 {
+    // Function to split a string into tokens using a delimiter
     std::vector<std::string> split(const std::string &s, char delimiter)
     {
         std::vector<std::string> tokens;
@@ -34,6 +35,7 @@ MessageBox::~MessageBox()
     endwin();
 }
 
+// Show the message box and return the selected option
 std::string MessageBox::show()
 {
     int key;
@@ -57,12 +59,13 @@ std::string MessageBox::show()
                 selectedOption = 0;
             }
             break;
-        case 10:
+        case 10:    // Return the selected option when Enter is pressed
             return winOptions.at(selectedOption);
         }
     }
 }
 
+// Initialize the message box with the title, message, and options
 void MessageBox::initialize(std::string title, std::string message, std::vector<std::string> options)
 {
     initscr();
@@ -78,6 +81,7 @@ void MessageBox::initialize(std::string title, std::string message, std::vector<
     box(messageBoxWin, 0, 0);
 }
 
+// Calculate the dimensions of the message box
 void MessageBox::calculate_window_dimensions()
 {
     int maxy, maxx;
@@ -101,6 +105,7 @@ void MessageBox::calculate_window_dimensions()
     }
 }
 
+// Check if the options fit in the message box
 bool MessageBox::fit_options()
 {
     bool fit = true;
@@ -113,6 +118,7 @@ bool MessageBox::fit_options()
     return fit;
 }
 
+// Check if the message fits in the message box
 bool MessageBox::fit_message()
 {
     std::vector<std::string> lines = split(winMessage, '\n');
@@ -135,6 +141,7 @@ bool MessageBox::fit_message()
     return fit;
 }
 
+// Get total length of the options
 int MessageBox::options_length()
 {
     int optionsLength = 0;
@@ -145,6 +152,7 @@ int MessageBox::options_length()
     return optionsLength;
 }
 
+// Print the message box
 void MessageBox::print_dialog_box()
 {
     wclear(messageBoxWin);

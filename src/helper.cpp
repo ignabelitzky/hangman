@@ -2,9 +2,10 @@
 
 namespace
 {
-    std::vector<std::string> words;
+    std::vector<std::string> words; // static vector to store the words
 }
 
+// Function to populate the words vector
 void populate_words()
 {
     std::string inputFile = "data/clean_oxford_3000_word_list.txt";
@@ -41,6 +42,7 @@ std::string get_random_word()
     return words.at(gen_random_int(0, words.size() - 1));
 }
 
+// Fucntion to convert a grayscale value to an ASCII character
 char grayScaleToASCII(float scale)
 {
     std::string asciiChars = " :-=+*#%@";
@@ -69,6 +71,7 @@ void set_hangman_images(std::map<Stage, cv::Mat> &m)
     }
 }
 
+// Function to display the top 5 scores
 void display_scores()
 {
     sort_scores();
@@ -112,6 +115,7 @@ void display_scores()
     }
 }
 
+// Function to save the player's score
 void save_score(const std::string &name, int score)
 {
     std::string inputFile = "data/scores.txt";
@@ -127,6 +131,7 @@ void save_score(const std::string &name, int score)
     }
 }
 
+// Function to sort the scores in descending order
 void sort_scores()
 {
     std::string inputFile = "data/scores.txt";
@@ -166,6 +171,7 @@ void sort_scores()
     }
 }
 
+// Function to clear the scores
 void clear_scores()
 {
     std::string inputFile = "data/scores.txt";
@@ -180,6 +186,7 @@ void clear_scores()
     }
 }
 
+// Function to get the player's name
 std::string get_player_name()
 {
     initscr();

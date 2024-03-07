@@ -29,8 +29,9 @@ void Menu::drawMenu()
         y += 2;
         if (i == static_cast<size_t>(menuItem))
         {
-            wattron(window, A_REVERSE);
+            wattron(window, A_REVERSE); // Highlight the present choice
         }
+        // Move cursor and add menu item
         wmove(window, y, x - offset);
         waddstr(window, entries.at(i).name.c_str());
         wattroff(window, A_REVERSE);
@@ -55,6 +56,7 @@ Option Menu::display()
 
     drawMenu();
 
+    // Handle user input
     do
     {
         key = getch();
@@ -81,5 +83,5 @@ Option Menu::display()
     curs_set(1);
     wclear(window);
     wrefresh(window);
-    return options.at(menuItem);
+    return options.at(menuItem);    // Return user selection
 }
