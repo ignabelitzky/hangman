@@ -1,18 +1,18 @@
 #include "../include/game.h"
 
-
-void Game::initialize_windows() {
+void Game::initialize_windows()
+{
     int maxy, maxx;
     getmaxyx(stdscr, maxy, maxx);
     int yOffset = maxy / 2;
 
     hangmanWindow = newwin(yOffset, maxx, 0, 0);
     yOffset = 5;
-    hiddenWordWindow = newwin(yOffset, maxx, maxy/2, 0);
+    hiddenWordWindow = newwin(yOffset, maxx, maxy / 2, 0);
     yOffset = 9;
-    availableLettersWindow = newwin(yOffset, maxx, maxy/2 + 5, 0);
+    availableLettersWindow = newwin(yOffset, maxx, maxy / 2 + 5, 0);
     yOffset = maxy - maxy / 2 - 14;
-    promptWindow = newwin(yOffset, maxx, maxy/2 + 14, 0);
+    promptWindow = newwin(yOffset, maxx, maxy / 2 + 14, 0);
 
     add_title_to_window(hangmanWindow, "The Hangman");
     add_title_to_window(hiddenWordWindow, "Hidden Word");
@@ -26,59 +26,73 @@ void Game::initialize_windows() {
     wrefresh(promptWindow);
 }
 
-void Game::update_hangman_window() {
+void Game::update_hangman_window()
+{
     wmove(hangmanWindow, 0, 0);
-    int height = getmaxy(hangmanWindow)-2;
+    int height = getmaxy(hangmanWindow) - 2;
     int width = getmaxx(hangmanWindow);
 
     cv::Mat image = hangmanImages[hangmanState];
-    cv::resize(image, image, cv::Size(height*2, height), 0, 0, cv::INTER_LINEAR);
-    
-    for(int y = 0; y < image.rows; ++y) {
-        for(int x = 0; x < image.cols; ++x) {
+    cv::resize(image, image, cv::Size(height * 2, height), 0, 0, cv::INTER_LINEAR);
+
+    for (int y = 0; y < image.rows; ++y)
+    {
+        for (int x = 0; x < image.cols; ++x)
+        {
             float pixelValue = image.at<uchar>(y, x);
             char asciiChar = grayScaleToASCII(pixelValue);
-            mvwaddch(hangmanWindow, y+1, width/2 + x - height, asciiChar);
+            mvwaddch(hangmanWindow, y + 1, width / 2 + x - height, asciiChar);
         }
     }
+    mvwprintw(hangmanWindow, 1, 1, "Player: %s", playerName.c_str());
+    mvwprintw(hangmanWindow, 2, 1, "Score: %d", playerScore);
     wrefresh(hangmanWindow);
 }
 
-void Game::update_hidden_word_window() {
+void Game::update_hidden_word_window()
+{
     int maxy, maxx;
     getmaxyx(hiddenWordWindow, maxy, maxx);
     int wordLength = randomWord.size();
-    for(int i = 0; i < wordLength; ++i) {
-        mvwaddch(hiddenWordWindow, maxy/2, maxx/2 - wordLength + i*2, hiddenWord.at(i));
+    for (int i = 0; i < wordLength; ++i)
+    {
+        mvwaddch(hiddenWordWindow, maxy / 2, maxx / 2 - wordLength + i * 2, hiddenWord.at(i));
     }
     wrefresh(hiddenWordWindow);
 }
 
-void Game::update_available_letters_window() {
+void Game::update_available_letters_window()
+{
     wclear(availableLettersWindow);
     box(availableLettersWindow, 0, 0);
     add_title_to_window(availableLettersWindow, "Available Letters");
     int maxy, maxx;
     getmaxyx(availableLettersWindow, maxy, maxx);
-    for(size_t i = 0; i < availableLetters.size(); ++i) {
-        mvwaddch(availableLettersWindow, maxy/2, maxx/2 - availableLetters.size() + i*2, availableLetters.at(i));
+    for (size_t i = 0; i < availableLetters.size(); ++i)
+    {
+        mvwaddch(availableLettersWindow, maxy / 2, maxx / 2 - availableLetters.size() + i * 2, availableLetters.at(i));
     }
     wrefresh(availableLettersWindow);
 }
 
-std::string Game::update_prompt_window() {
+std::string Game::update_prompt_window()
+{
     int input;
     update_text_from_prompt_window(promptWindow, "");
     std::string result;
-    while((input = wgetch(promptWindow)) != '\n') {
-        if(input == 127) {
-            if(result.size() > 0) {
+    while ((input = wgetch(promptWindow)) != '\n')
+    {
+        if (input == 127)
+        {
+            if (result.size() > 0)
+            {
                 result.pop_back();
                 update_text_from_prompt_window(promptWindow, result);
             }
             continue;
         }
-        if(input >= 'a' && input <= 'z') {
+        if (input >= 'a' && input <= 'z')
+        {
             input -= 32;
         }
         wprintw(promptWindow, "%c", input);
@@ -89,90 +103,122 @@ std::string Game::update_prompt_window() {
     return result;
 }
 
-void Game::game_over() {
+void Game::game_over()
+{
     std::vector<std::string> options = {"Go to the main menu"};
     std::string message = std::format("You {}!!!\n\nThe word was {}", isWinner ? "won" : "lose", randomWord);
-    try {
+    try
+    {
         MessageBox *mboxGameOver = new MessageBox(" [Game Over] ", message, options);
         mboxGameOver->show();
         delete mboxGameOver;
-    } catch(const std::runtime_error &e) {
+    }
+    catch (const std::runtime_error &e)
+    {
         endwin();
         std::cerr << e.what() << '\n';
         exit(1);
     }
+    save_score(playerName, playerScore);
 }
 
-Game::Game() {
+Game::Game()
+{
     hangmanState = ZERO;
     set_hangman_images(hangmanImages);
-    for(char i = 'A'; i <= 'Z'; ++i) {
+    for (char i = 'A'; i <= 'Z'; ++i)
+    {
         availableLetters.push_back(i);
     }
     randomWord = get_random_word();
     hiddenWord = std::string(randomWord.length(), '_');
     finish = false;
     isWinner = false;
+    playerName = "";
+    playerScore = 0;
 }
 
-void Game::update_round(std::string input) {
+void Game::update_round(std::string input)
+{
     std::vector<int> positionsFound;
-    if(input.size() == 1) {
+    if (input.size() == 1)
+    {
         char ch = input.at(0);
         availableLetters.erase(std::remove(availableLetters.begin(), availableLetters.end(), ch), availableLetters.end());
-        for(size_t i = 0; i < randomWord.size(); ++i) {
-            if(randomWord.at(i) == ch) {
+        for (size_t i = 0; i < randomWord.size(); ++i)
+        {
+            if (randomWord.at(i) == ch)
+            {
                 positionsFound.push_back(i);
             }
         }
-        if(positionsFound.empty()) {
-            if(hangmanState != SIX) {
+        if (positionsFound.empty())
+        {
+            playerScore -= 10;
+            if (hangmanState != SIX)
+            {
                 hangmanState = static_cast<Stage>(static_cast<int>(hangmanState) + 1);
             }
-        } else {
-            for(size_t i = 0; i < positionsFound.size(); ++i) {
+        }
+        else
+        {
+            for (size_t i = 0; i < positionsFound.size(); ++i)
+            {
+                playerScore += 5;
                 hiddenWord.at(positionsFound.at(i)) = ch;
             }
         }
-    } else {
-        if(input.compare(randomWord) == 0) {
+    }
+    else
+    {
+        if (input.compare(randomWord) == 0)
+        {
+            playerScore += 50;
             hiddenWord = randomWord;
-        } else {
+        }
+        else
+        {
+            playerScore -= 50;
             hangmanState = static_cast<Stage>(static_cast<int>(hangmanState) + 1);
         }
     }
 }
 
-Game::~Game() {
-
+Game::~Game()
+{
 }
 
-void Game::run() {
-    initscr();
+void Game::run()
+{
+    playerName = get_player_name();
     noecho();
     initialize_windows();
 
     std::string input;
 
-    do {
+    do
+    {
         update_hangman_window();
         update_hidden_word_window();
         update_available_letters_window();
         input = update_prompt_window();
         update_round(input);
-        if(hangmanState == SIX) {
+        if (hangmanState == SIX)
+        {
             finish = true;
-        } else if(randomWord.compare(hiddenWord) == 0) {
+        }
+        else if (randomWord.compare(hiddenWord) == 0)
+        {
             finish = true;
             isWinner = true;
         }
-    } while(finish != true);
+    } while (finish != true);
 
     wclear(hangmanWindow);
     wclear(hiddenWordWindow);
     wclear(availableLettersWindow);
     wclear(promptWindow);
-    
+
     wrefresh(hangmanWindow);
     wrefresh(hiddenWordWindow);
     wrefresh(availableLettersWindow);
@@ -188,12 +234,13 @@ void Game::run() {
     endwin();
 }
 
-void Game::update_text_from_prompt_window(WINDOW *promptWindow, std::string input) {
+void Game::update_text_from_prompt_window(WINDOW *promptWindow, std::string input)
+{
     int maxy = getmaxy(promptWindow);
     std::string message = std::format("\tPlease enter a letter or a word >> {}", input);
     wclear(promptWindow);
     box(promptWindow, 0, 0);
     add_title_to_window(promptWindow, "Prompt Window");
-    mvwaddstr(promptWindow, maxy/2, 1, message.c_str());
+    mvwaddstr(promptWindow, maxy / 2, 1, message.c_str());
     wrefresh(promptWindow);
 }
