@@ -1,10 +1,21 @@
 #include <iostream>
-#include "../include/menu.h"
-#include "../include/helper.h"
-#include "../include/game.h"
+#include "../include/menu.hpp"
+#include "../include/helper.hpp"
+#include "../include/game.hpp"
+#include "../include/audio.hpp"
+#define MINIAUDIO_IMPLEMENTATION
+#include "../include/miniaudio.hpp"
 
 int main()
 {
+    Audio * audio = nullptr;
+    try {
+        audio = new Audio("./resources/audios/game-music.mp3");
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        exit(1);
+    }
+    audio->play();
     Option selection(NEW_GAME);
     do
     {
@@ -41,6 +52,7 @@ int main()
             }
         }
     } while (selection != EXIT);
+    delete audio;
     wclear(stdscr);
     wrefresh(stdscr);
     endwin();

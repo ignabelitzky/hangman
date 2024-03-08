@@ -6,8 +6,8 @@
 #include <map>
 #include <string>
 #include <format>
-#include "helper.h"
-#include "../include/message_box.hpp"
+#include "helper.hpp"
+#include "message_box.hpp"
 
 class Game
 {

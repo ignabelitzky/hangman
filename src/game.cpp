@@ -1,4 +1,4 @@
-#include "../include/game.h"
+#include "../include/game.hpp"
 
 void Game::initialize_windows()
 {

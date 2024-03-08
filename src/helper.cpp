@@ -1,4 +1,4 @@
-#include "../include/helper.h"
+#include "../include/helper.hpp"
 
 namespace
 {
@@ -202,4 +202,16 @@ std::string get_player_name()
     wrefresh(stdscr);
     endwin();
     return std::string(name);
+}
+
+void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
+{
+    ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
+    if (pDecoder == nullptr) {
+        return;
+    }
+
+    ma_data_source_read_pcm_frames(pDecoder, pOutput, frameCount, nullptr);
+
+    (void)pInput;
 }

@@ -11,6 +11,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "../include/message_box.hpp"
+#include "miniaudio.hpp"
 
 enum Stage
 {
@@ -44,5 +45,7 @@ void sort_scores();
 void clear_scores();
 
 std::string get_player_name();
+
+void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
 
 #endif
