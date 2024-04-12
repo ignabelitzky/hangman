@@ -1,21 +1,21 @@
-#include <sstream>
 #include "../include/message_box.hpp"
+#include <sstream>
 
 namespace
 {
-    // Function to split a string into tokens using a delimiter
-    std::vector<std::string> split(const std::string &s, char delimiter)
+// Function to split a string into tokens using a delimiter
+std::vector<std::string> split(const std::string &s, char delimiter)
+{
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream tokenStream(s);
+    while (std::getline(tokenStream, token, delimiter))
     {
-        std::vector<std::string> tokens;
-        std::string token;
-        std::istringstream tokenStream(s);
-        while (std::getline(tokenStream, token, delimiter))
-        {
-            tokens.push_back(token);
-        }
-        return tokens;
+        tokens.push_back(token);
     }
+    return tokens;
 }
+} // namespace
 
 MessageBox::MessageBox(std::string title, std::string message, std::vector<std::string> options)
 {
@@ -59,7 +59,7 @@ std::string MessageBox::show()
                 selectedOption = 0;
             }
             break;
-        case 10:    // Return the selected option when Enter is pressed
+        case 10: // Return the selected option when Enter is pressed
             return winOptions.at(selectedOption);
         }
     }

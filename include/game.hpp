@@ -1,17 +1,17 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <ncurses.h>
-#include <vector>
-#include <map>
-#include <string>
-#include <format>
 #include "helper.hpp"
 #include "message_box.hpp"
+#include <format>
+#include <map>
+#include <ncurses.h>
+#include <string>
+#include <vector>
 
 class Game
 {
-private:
+  private:
     Stage hangmanState;
     std::map<Stage, cv::Mat> hangmanImages;
     WINDOW *hangmanWindow;
@@ -33,7 +33,7 @@ private:
     void update_round(std::string input);
     static void update_text_from_prompt_window(WINDOW *promptWindow, std::string input);
 
-public:
+  public:
     Game();
     ~Game();
     void run();

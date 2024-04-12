@@ -1,10 +1,10 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include <vector>
-#include <utility>
-#include <string>
 #include <ncurses.h>
+#include <string>
+#include <utility>
+#include <vector>
 
 enum Option
 {
@@ -21,7 +21,7 @@ struct MenuItem
 
 class Menu
 {
-private:
+  private:
     std::string title;
     std::vector<MenuItem> entries;
     WINDOW *window;
@@ -31,7 +31,7 @@ private:
     std::vector<Option> options;
     void drawMenu();
 
-public:
+  public:
     Menu(WINDOW *window);
     ~Menu();
     Option display();

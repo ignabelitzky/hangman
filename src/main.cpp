@@ -1,17 +1,20 @@
-#include <iostream>
-#include "../include/menu.hpp"
-#include "../include/helper.hpp"
-#include "../include/game.hpp"
 #include "../include/audio.hpp"
+#include "../include/game.hpp"
+#include "../include/helper.hpp"
+#include "../include/menu.hpp"
+#include <iostream>
 #define MINIAUDIO_IMPLEMENTATION
 #include "../include/miniaudio.hpp"
 
 int main()
 {
-    Audio * audio = nullptr;
-    try {
+    Audio *audio = nullptr;
+    try
+    {
         audio = new Audio("./resources/audios/game-music.mp3");
-    } catch (const std::exception &e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << e.what() << std::endl;
         exit(1);
     }

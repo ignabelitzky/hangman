@@ -94,7 +94,7 @@ std::string Game::update_prompt_window()
     // Continue to get input until the user presses enter
     while ((input = wgetch(promptWindow)) != '\n')
     {
-        if (input == 127)   // Handle backspace(delete) key
+        if (input == 127) // Handle backspace(delete) key
         {
             if (result.size() > 0)
             {
@@ -119,7 +119,8 @@ std::string Game::update_prompt_window()
 void Game::game_over()
 {
     std::vector<std::string> options = {"Go to the main menu"};
-    std::string message = std::format("You {}!!!\n\nThe word was {}", isWinner ? "won" : "lose", randomWord);
+    std::string message =
+        std::format("You {}!!!\n\nThe word was {}\n\nScore: {}", isWinner ? "won" : "lose", randomWord, playerScore);
     try
     {
         MessageBox *mboxGameOver = new MessageBox(" [Game Over] ", message, options);
@@ -158,7 +159,8 @@ void Game::update_round(std::string input)
     if (input.size() == 1)
     {
         char ch = input.at(0);
-        availableLetters.erase(std::remove(availableLetters.begin(), availableLetters.end(), ch), availableLetters.end());
+        availableLetters.erase(std::remove(availableLetters.begin(), availableLetters.end(), ch),
+                               availableLetters.end());
         for (size_t i = 0; i < randomWord.size(); ++i)
         {
             if (randomWord.at(i) == ch)
@@ -231,7 +233,7 @@ void Game::run()
             finish = true;
             isWinner = true;
         }
-    } while (finish != true);   // Continue game loop until the game is finished
+    } while (finish != true); // Continue game loop until the game is finished
 
     // Clear all game windows
     wclear(hangmanWindow);

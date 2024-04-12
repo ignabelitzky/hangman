@@ -83,5 +83,5 @@ Option Menu::display()
     curs_set(1);
     wclear(window);
     wrefresh(window);
-    return options.at(menuItem);    // Return user selection
+    return options.at(menuItem); // Return user selection
 }

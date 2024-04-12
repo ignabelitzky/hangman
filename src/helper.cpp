@@ -2,7 +2,7 @@
 
 namespace
 {
-    std::vector<std::string> words; // static vector to store the words
+std::vector<std::string> words; // static vector to store the words
 }
 
 // Function to populate the words vector
@@ -88,7 +88,7 @@ void display_scores()
             topScores += line + "\n";
             ++scoreCounter;
         }
-        if(scoreCounter == 0)
+        if (scoreCounter == 0)
         {
             topScores = "No scores yet!";
         }
@@ -149,8 +149,10 @@ void sort_scores()
             scores.push_back(std::make_pair(name, score));
         }
         ifstrm.close();
-        std::sort(scores.begin(), scores.end(), [](const std::pair<std::string, int> &a, const std::pair<std::string, int> &b)
-                  { return a.second > b.second; });
+        std::sort(scores.begin(), scores.end(),
+                  [](const std::pair<std::string, int> &a, const std::pair<std::string, int> &b) {
+                      return a.second > b.second;
+                  });
         std::ofstream ofstrm(inputFile);
         if (ofstrm)
         {
@@ -204,10 +206,11 @@ std::string get_player_name()
     return std::string(name);
 }
 
-void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
+void data_callback(ma_device *pDevice, void *pOutput, const void *pInput, ma_uint32 frameCount)
 {
-    ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
-    if (pDecoder == nullptr) {
+    ma_decoder *pDecoder = (ma_decoder *)pDevice->pUserData;
+    if (pDecoder == nullptr)
+    {
         return;
     }
 

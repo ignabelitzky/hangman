@@ -1,17 +1,17 @@
 #ifndef HELPER_H
 #define HELPER_H
 
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <vector>
-#include <map>
-#include <random>
-#include <ncurses.h>
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
 #include "../include/message_box.hpp"
 #include "miniaudio.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include <fstream>
+#include <iostream>
+#include <map>
+#include <ncurses.h>
+#include <random>
+#include <string>
+#include <vector>
 
 enum Stage
 {
@@ -46,6 +46,6 @@ void clear_scores();
 
 std::string get_player_name();
 
-void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
+void data_callback(ma_device *pDevice, void *pOutput, const void *pInput, ma_uint32 frameCount);
 
 #endif

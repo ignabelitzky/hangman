@@ -1,21 +1,21 @@
 #ifndef MESSAGE_BOX_H
 #define MESSAGE_BOX_H
 
-#include <vector>
-#include <string>
 #include <ncurses.h>
-#include <stdexcept>
 #include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 class MessageBox
 {
-public:
+  public:
     MessageBox(std::string title, std::string message, std::vector<std::string> options);
     MessageBox(std::string message, std::vector<std::string> options);
     ~MessageBox();
     std::string show();
 
-private:
+  private:
     void initialize(std::string title, std::string message, std::vector<std::string> options);
     void calculate_window_dimensions();
     bool fit_options();
