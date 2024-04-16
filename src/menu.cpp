@@ -7,10 +7,12 @@ Menu::Menu(WINDOW *window)
     getmaxyx(window, windowHeight, windowWidth);
     entries.push_back(MenuItem{0, "New Game"});
     entries.push_back(MenuItem(1, "Scores"));
-    entries.push_back(MenuItem{2, "Exit"});
+    entries.push_back(MenuItem(2, "Silent Mode"));
+    entries.push_back(MenuItem{3, "Exit"});
     menuItem = 0;
     options.push_back(NEW_GAME);
     options.push_back(SCORES);
+    options.push_back(SILENT_MODE);
     options.push_back(EXIT);
 }
 

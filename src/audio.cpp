@@ -37,3 +37,15 @@ void Audio::play()
         throw std::runtime_error("Failed to start playback device");
     }
 }
+
+void Audio::toggle()
+{
+    if (ma_device_is_started(&device))
+    {
+        ma_device_stop(&device);
+    }
+    else
+    {
+        ma_device_start(&device);
+    }
+}

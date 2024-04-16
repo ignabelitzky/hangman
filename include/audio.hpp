@@ -12,6 +12,7 @@ class Audio
     Audio(std::string filename);
     ~Audio();
     void play();
+    void toggle();
 
   private:
     ma_result result;

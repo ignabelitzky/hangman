@@ -54,6 +54,10 @@ int main()
                 exit(1);
             }
         }
+        if (selection == SILENT_MODE)
+        {
+            audio->toggle();
+        }
     } while (selection != EXIT);
     delete audio;
     wclear(stdscr);

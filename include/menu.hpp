@@ -10,6 +10,7 @@ enum Option
 {
     NEW_GAME,
     SCORES,
+    SILENT_MODE,
     EXIT
 };
 
