@@ -18,7 +18,7 @@ $(TARGET): $(OBJ)
 	$(CXX) -c -o $@ $< $(CXXFLAGS) $(OPENCV_LIBS) $(MINIAUDIO_LIBS)
 
 format:
-	clang-format -style=Microsoft -i src/*.cpp include/*.hpp
+	clang-format -style=Microsoft -i src/*.cpp include/audio.hpp include/game.hpp include/helper.hpp include/menu.hpp include/message_box.hpp
 
 clean:
 	rm -f $(TARGET) $(OBJ)
