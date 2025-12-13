@@ -131,7 +131,7 @@ void Game::game_over()
     {
         endwin();
         std::cerr << e.what() << '\n';
-        exit(1);
+        std::exit(1);
     }
     save_score(playerName, playerScore);
 }
@@ -202,6 +202,10 @@ void Game::update_round(std::string input)
 
 Game::~Game()
 {
+    delwin(hangmanWindow);
+    delwin(hiddnWordWindow);
+    delwin(guessedLettersWindow);
+    delwin(messageWindow);
 }
 
 // Main function to run the game

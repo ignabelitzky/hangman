@@ -8,6 +8,7 @@ std::vector<std::string> words; // static vector to store the words
 // Function to populate the words vector
 void populate_words()
 {
+    words.clear();
     std::string inputFile = "data/clean_oxford_3000_word_list.txt";
     std::ifstream ifstrm{inputFile};
     std::string word;
